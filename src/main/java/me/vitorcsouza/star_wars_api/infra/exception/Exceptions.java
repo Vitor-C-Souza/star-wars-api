@@ -31,4 +31,14 @@ public class Exceptions {
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseError);
     }
+
+    @ExceptionHandler(usuarioDuplicadoException.class)
+    public ResponseEntity<ResponseError> usuarioDuplicadoException( usuarioDuplicadoException exception){
+        ResponseError responseError = new ResponseError(
+                exception.getMessage(),
+                HttpStatus.NOT_FOUND,
+                LocalDateTime.now()
+        );
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseError);
+    }
 }
