@@ -25,7 +25,7 @@ public class PersonagemController {
     private PersonagemService service;
 
     @PostMapping
-    @Operation(summary = "Criar um novo personagem.", tags = {"Personagem"})
+    @Operation(summary = "Criar um novo personagem.", tags = {"Personagem"}, description = "Na hora de preencher a afiliação usar uma dessas opções (JEDI, SITH, CAVALEIROS_DE_REN, GUARDAS_DO_TEMPLO_JEDI, INQUISIDORES, AS_IRMAS_DA_NOITE, REPUBLICA_GALACTICA, IMPERIO_GALACTICO, ALIANCA_REBELDE, NOVA_REPUBLICA, PRIMEIRA_ORDEM, RESISTENCIA, O_SOL_NEGRO, CARTEL_DOS_HUTT, O_COLETIVO_SOMBRIO, CLA_PYKE, GUARDA_REAL_IMPERIAL, GUARDA_PRETORIANA, MANDALORIANOS, STORMTROOPERS, CLONE_TROOPERS, CACADORES_DE_RECOMPENSAS, A_ORDEM_66, GUARDIOES_DOS_WHILLS, COMERCIO_DE_DROIDS, A_GUILDA_DOS_CACADORES_DE_RECOMPENSAS, OS_CAVALEIROS_MANDALORIANOS, NEUTRO).")
     public ResponseEntity<PersonagemDtoRes> create(@RequestBody @Valid PersonagemDtoReq dtoReq, UriComponentsBuilder uri){
         PersonagemDtoRes dtoRes = service.create(dtoReq);
         URI address = uri.path("/personagem/{id}").buildAndExpand(dtoRes.id()).toUri();
