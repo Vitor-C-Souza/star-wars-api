@@ -20,11 +20,12 @@ public class Personagem {
     @Column(nullable = false)
     private String raca;
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private Afiliacao afiliacao;
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     private Planeta planetaNatal;
 
-    public Personagem(PersonagemDtoReq dtoReq, PlanetaRepository planetaRepository){
+    public Personagem(PersonagemDtoReq dtoReq, PlanetaRepository planetaRepository) {
         createOrUpdate(dtoReq, planetaRepository);
     }
 
