@@ -20,7 +20,7 @@ public class Personagem {
     @Column(nullable = false)
     private String raca;
     @Column(nullable = false)
-    private String afiliacao;
+    private Afiliacao afiliacao;
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     private Planeta planetaNatal;
 
@@ -31,7 +31,7 @@ public class Personagem {
     public void createOrUpdate(PersonagemDtoReq dtoReq, PlanetaRepository planetaRepository) {
         this.nome = dtoReq.nome();
         this.raca = dtoReq.raca();
-        this.afiliacao = dtoReq.afiliacao();
+        this.afiliacao = Afiliacao.valueOf(dtoReq.afiliacao().toUpperCase());
         this.planetaNatal = planetaRepository.findById(dtoReq.planetaNatal_id()).orElseThrow(NoSuchElementException::new);
     }
 }
