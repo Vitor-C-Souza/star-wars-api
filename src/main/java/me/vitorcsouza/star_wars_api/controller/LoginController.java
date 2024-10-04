@@ -1,5 +1,6 @@
 package me.vitorcsouza.star_wars_api.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import me.vitorcsouza.star_wars_api.domain.dto.CadastroDto;
 import me.vitorcsouza.star_wars_api.domain.dto.TokenJWT;
@@ -28,6 +29,7 @@ public class LoginController {
     private TokenService tokenService;
 
     @PostMapping("/cadastrar")
+    @Operation(summary = "Realiza um cadastro no sistema", tags = {"Autenticação"})
     public ResponseEntity<CadastroDto> cadastrar(@RequestBody @Valid CadastroDto dto, UriComponentsBuilder uri){
         String senhaEncriptada = BCrypt.hashpw(dto.senha(), BCrypt.gensalt());
         CadastroDto cadastro = service.cadastro(dto, senhaEncriptada);
@@ -38,6 +40,7 @@ public class LoginController {
     }
 
     @PostMapping("/logar")
+    @Operation(summary = "Loga no sistema", tags = {"Autenticação"})
     public ResponseEntity<TokenJWT> logar(@RequestBody @Valid CadastroDto dto){
         var authenticationToken = new UsernamePasswordAuthenticationToken(dto.usuario(), dto.senha());
         var authentication = manager.authenticate(authenticationToken);
