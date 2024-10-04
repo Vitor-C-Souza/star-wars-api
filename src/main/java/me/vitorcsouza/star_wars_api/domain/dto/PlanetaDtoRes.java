@@ -1,7 +1,10 @@
 package me.vitorcsouza.star_wars_api.domain.dto;
 
 import me.vitorcsouza.star_wars_api.domain.model.Planeta;
-import me.vitorcsouza.star_wars_api.domain.model.SistemaEstelar;
+import me.vitorcsouza.star_wars_api.domain.repository.PersonagemRepository;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 public record PlanetaDtoRes(
         Long id,
@@ -9,16 +12,18 @@ public record PlanetaDtoRes(
         String clima,
         String terreno,
         Integer populacao,
-        SistemaEstelarDtoRes sistema
+        SistemaEstelarDtoResPlaneta sistema,
+        List<PersonagemDtoResPlaneta> personagens
 ) {
-    public PlanetaDtoRes(Planeta planeta){
+    public PlanetaDtoRes(Planeta planeta, PersonagemRepository personagemRepository){
         this(
                 planeta.getId(),
                 planeta.getNome(),
                 planeta.getClima(),
                 planeta.getTerreno(),
                 planeta.getPopulacao(),
-                new SistemaEstelarDtoRes(planeta.getSistema())
+                new SistemaEstelarDtoResPlaneta(planeta.getSistema()),
+                personagemRepository.findByPlaneta(planeta.getId()).stream().map(PersonagemDtoResPlaneta::new).collect(Collectors.toList())
         );
     }
 }

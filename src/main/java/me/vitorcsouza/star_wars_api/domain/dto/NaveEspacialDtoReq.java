@@ -7,7 +7,6 @@ public record NaveEspacialDtoReq(
         @NotNull @NotBlank String nome,
         @NotNull @NotBlank String modelo,
         @NotNull @NotBlank String fabricante,
-        @NotNull @NotBlank Integer capacidadePassageiros
-
+        @NotNull Integer capacidadePassageiros
 ) {
 }

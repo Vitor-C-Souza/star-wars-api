@@ -4,6 +4,7 @@ package me.vitorcsouza.star_wars_api.domain.service.impl;
 import me.vitorcsouza.star_wars_api.domain.dto.SistemaEstelarDtoReq;
 import me.vitorcsouza.star_wars_api.domain.dto.SistemaEstelarDtoRes;
 import me.vitorcsouza.star_wars_api.domain.model.SistemaEstelar;
+import me.vitorcsouza.star_wars_api.domain.repository.PlanetaRepository;
 import me.vitorcsouza.star_wars_api.domain.repository.SistemaEstelarRepository;
 import me.vitorcsouza.star_wars_api.domain.service.SistemaEstelarService;
 import me.vitorcsouza.star_wars_api.domain.service.convert.SistemaEstelarConvert;
@@ -20,6 +21,8 @@ public class SistemaEstelarServiceImpl implements SistemaEstelarService {
     @Autowired
     private SistemaEstelarRepository repository;
     @Autowired
+    private PlanetaRepository planetaRepository;
+    @Autowired
     private SistemaEstelarConvert convert;
 
     @Transactional
@@ -27,21 +30,21 @@ public class SistemaEstelarServiceImpl implements SistemaEstelarService {
     public SistemaEstelarDtoRes create(SistemaEstelarDtoReq dto) {
         SistemaEstelar sistemaEstelar = convert.toModel(dto);
         repository.save(sistemaEstelar);
-        return convert.toDto(sistemaEstelar);
+        return convert.toDto(sistemaEstelar, planetaRepository);
     }
 
     @Transactional(readOnly = true)
     @Override
     public SistemaEstelarDtoRes findById(Long id) {
         SistemaEstelar sistemaEstelar = repository.findById(id).orElseThrow(NoSuchElementException::new);
-        return convert.toDto(sistemaEstelar);
+        return convert.toDto(sistemaEstelar, planetaRepository);
     }
 
     @Transactional(readOnly = true)
     @Override
     public Page<SistemaEstelarDtoRes> findAll(Pageable pageable) {
         Page<SistemaEstelar> sistemaEstelarPage = repository.findAll(pageable);
-        return sistemaEstelarPage.map(SistemaEstelarDtoRes::new);
+        return sistemaEstelarPage.map(sistemaEstelar -> new SistemaEstelarDtoRes(sistemaEstelar, planetaRepository));
     }
 
     @Transactional
@@ -50,7 +53,7 @@ public class SistemaEstelarServiceImpl implements SistemaEstelarService {
         SistemaEstelar referenceById = repository.getReferenceById(id);
         referenceById.createOrUpdate(dtoReq);
         repository.save(referenceById);
-        return convert.toDto(referenceById);
+        return convert.toDto(referenceById, planetaRepository);
     }
 
     @Transactional

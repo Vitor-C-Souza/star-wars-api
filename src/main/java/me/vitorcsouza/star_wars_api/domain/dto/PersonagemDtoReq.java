@@ -7,6 +7,6 @@ public record PersonagemDtoReq(
         @NotBlank @NotNull String nome,
         @NotBlank @NotNull String raca,
         @NotBlank @NotNull String afiliacao,
-        @NotBlank @NotNull Long planetaNatal_id
+        @NotNull Long planetaNatal_id
 ) {
 }

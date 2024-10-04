@@ -24,6 +24,7 @@ public class PersonagemServiceImpl implements PersonagemService {
     private PlanetaRepository planetaRepository;
     @Autowired
     private PersonagemConvert convert;
+
     @Transactional
     @Override
     public PersonagemDtoRes create(PersonagemDtoReq dto) {

@@ -2,20 +2,18 @@ package me.vitorcsouza.star_wars_api.domain.dto;
 
 import me.vitorcsouza.star_wars_api.domain.model.Personagem;
 
-public record PersonagemDtoRes(
+public record PersonagemDtoResPlaneta(
         Long id,
         String nome,
         String raca,
-        String afiliacao,
-        PlanetaDtoResPersonagem planeta_natal
+        String afiliacao
 ) {
-    public PersonagemDtoRes(Personagem personagem){
+    public PersonagemDtoResPlaneta(Personagem personagem){
         this(
                 personagem.getId(),
                 personagem.getNome(),
                 personagem.getRaca(),
-                String.valueOf(personagem.getAfiliacao()),
-                new PlanetaDtoResPersonagem(personagem.getPlanetaNatal())
+                String.valueOf(personagem.getAfiliacao())
         );
     }
 }

@@ -4,6 +4,7 @@ package me.vitorcsouza.star_wars_api.domain.service.impl;
 import me.vitorcsouza.star_wars_api.domain.dto.PlanetaDtoReq;
 import me.vitorcsouza.star_wars_api.domain.dto.PlanetaDtoRes;
 import me.vitorcsouza.star_wars_api.domain.model.Planeta;
+import me.vitorcsouza.star_wars_api.domain.repository.PersonagemRepository;
 import me.vitorcsouza.star_wars_api.domain.repository.PlanetaRepository;
 import me.vitorcsouza.star_wars_api.domain.repository.SistemaEstelarRepository;
 import me.vitorcsouza.star_wars_api.domain.service.PlanetaService;
@@ -15,7 +16,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.NoSuchElementException;
-import java.util.Optional;
 
 @Service
 public class PlanetaServiceImpl implements PlanetaService {
@@ -24,6 +24,8 @@ public class PlanetaServiceImpl implements PlanetaService {
     @Autowired
     private SistemaEstelarRepository sistemaEstelarRepository;
     @Autowired
+    private PersonagemRepository personagemRepository;
+    @Autowired
     private PlanetaConvert convert;
 
     @Transactional
@@ -31,21 +33,21 @@ public class PlanetaServiceImpl implements PlanetaService {
     public PlanetaDtoRes create(PlanetaDtoReq dto) {
         Planeta planeta = convert.toModel(dto, sistemaEstelarRepository);
         repository.save(planeta);
-        return convert.toDto(planeta);
+        return convert.toDto(planeta, personagemRepository);
     }
 
     @Transactional(readOnly = true)
     @Override
     public PlanetaDtoRes findById(Long id) {
         Planeta planeta = repository.findById(id).orElseThrow(NoSuchElementException::new);
-        return convert.toDto(planeta);
+        return convert.toDto(planeta, personagemRepository);
     }
 
     @Transactional(readOnly = true)
     @Override
     public Page<PlanetaDtoRes> findAll(Pageable pageable) {
         Page<Planeta> planetaPage = repository.findAll(pageable);
-        return planetaPage.map(PlanetaDtoRes::new);
+        return planetaPage.map(planeta -> new PlanetaDtoRes(planeta, personagemRepository));
     }
 
     @Transactional
@@ -54,7 +56,7 @@ public class PlanetaServiceImpl implements PlanetaService {
         Planeta referenceById = repository.getReferenceById(id);
         referenceById.createOrUpdate(dtoReq, sistemaEstelarRepository);
         repository.save(referenceById);
-        return convert.toDto(referenceById);
+        return convert.toDto(referenceById, personagemRepository);
     }
 
     @Transactional
