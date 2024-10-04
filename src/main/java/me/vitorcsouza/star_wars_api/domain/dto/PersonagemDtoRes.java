@@ -15,7 +15,7 @@ public record PersonagemDtoRes(
                 personagem.getId(),
                 personagem.getNome(),
                 personagem.getRaca(),
-                personagem.getAfiliacao(),
+                String.valueOf(personagem.getAfiliacao()),
                 personagem.getPlanetaNatal()
         );
     }
