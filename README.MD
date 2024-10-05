@@ -20,43 +20,52 @@ Criação, gerenciamento e visualização de uma galáxia inspirada em Star Wars
 ## Diagrama de Classes (Domínio da API)
 ```mermaid
     classDiagram
-    Usuario <<implements>> UserDetails
-    Usuario --> |created by| SistemaEstelar
-    SistemaEstelar --> |has many| Planeta
-    Planeta --> |has one| Personagem
-    Personagem --> |belongs to| Planeta
-    Planeta --> |belongs to| SistemaEstelar
-    SistemaEstelar use : SistemaEstelarDtoReq
-    Planeta use : PlanetaDtoReq
-    Personagem use : PersonagemDtoReq
-    NaveEspacial use : NaveEspacialDtoReq
-    
-    Usuario : String usuario
-    Usuario : String senha
+    class Usuario {
+        +Long id
+        +String usuario
+        +String senha
+        +Collection<? extends GrantedAuthority> getAuthorities()
+        +String getPassword()
+        +String getUsername()
+    }
 
-    SistemaEstelar : Long id
-    SistemaEstelar : String nome
-    SistemaEstelar : String descricao
-    SistemaEstelar : List<Planeta> planetas
+    class SistemaEstelar {
+        +Long id
+        +String nome
+        +String descricao
+        +List<Planeta> planetas
+    }
 
-    Planeta : Long id
-    Planeta : String nome
-    Planeta : String clima
-    Planeta : String terreno
-    Planeta : Integer populacao
-    Planeta : SistemaEstelar sistema
-    Planeta : List<Personagem> personagem
+    class Planeta {
+        +Long id
+        +String nome
+        +String clima
+        +String terreno
+        +Integer populacao
+        +SistemaEstelar sistema
+        +List<Personagem> personagem
+    }
 
-    Personagem : Long id
-    Personagem : String nome
-    Personagem : String raca
-    Personagem : Afiliacao afiliacao
+    class Personagem {
+        +Long id
+        +String nome
+        +String raca
+        +Afiliacao afiliacao
+        +Planeta planetaNatal
+    }
 
-    NaveEspacial : Long id
-    NaveEspacial : String nome
-    NaveEspacial : String modelo
-    NaveEspacial : String fabricante
-    NaveEspacial : Integer capacidadePassageiros
+    class NaveEspacial {
+        +Long id
+        +String nome
+        +String modelo
+        +String fabricante
+        +Integer capacidadePassageiros
+    }
+
+    SistemaEstelar "1" --> "0..*" Planeta : has many
+    Planeta "1" --> "0..*" Personagem : has many
+    Personagem "1" --> "1" Planeta : belongs to
+    Planeta "1" --> "1" SistemaEstelar : belongs to
 ```
 
 ## Testes
