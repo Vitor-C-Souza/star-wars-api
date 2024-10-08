@@ -157,8 +157,6 @@ class PlanetaControllerTest {
     @Test
     void deveRetornarCodigo200ParaEncontrarUmaPagePlaneta() throws Exception {
         //ARRANGE
-        when(planetaRepository.findAll(any(PageRequest.class))).thenReturn(planetaPage);
-
         Page<PlanetaDtoRes> planetaDtoResPage = planetaPage.map(planeta -> {
             List<PersonagemDtoResPlaneta> personagemDtoResPlanetas = personagemRepository.findByPlaneta(planeta.getId())
                     .stream().map(PersonagemDtoResPlaneta::new).toList();
