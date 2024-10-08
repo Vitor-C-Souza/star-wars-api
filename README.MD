@@ -11,7 +11,6 @@ Criação, gerenciamento e visualização de uma galáxia inspirada em Star Wars
 - Spring Data JPA
 - Hibernate
 - Lombok
-- SpringDoc
 - Validation
 - Spring Security
 - JSON Web Token (JWT)
