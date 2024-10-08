@@ -28,7 +28,6 @@ import java.util.stream.Collectors;
 
 import static org.mockito.BDDMockito.given;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.times;
@@ -55,7 +54,6 @@ class PlanetaServiceTest {
     private Planeta planeta2;
     private PlanetaDtoReq dtoReq;
     private PlanetaDtoRes dtoRes;
-    private
 
     Long id;
     Pageable paginacao;
@@ -65,8 +63,7 @@ class PlanetaServiceTest {
 
     @BeforeEach
     void setUp() {
-        SistemaEstelarDtoReq sistemaEstelarDtoReq;
-        sistemaEstelarDtoReq = new SistemaEstelarDtoReq(
+        SistemaEstelarDtoReq sistemaEstelarDtoReq = new SistemaEstelarDtoReq(
                 "Sistema Estelar Coruscant",
                 "Centro político da galáxia e lar da cidade-planeta Coruscant, sede da República Galáctica."
         );
