@@ -14,7 +14,7 @@ Criação, gerenciamento e visualização de uma galáxia inspirada em Star Wars
 - SpringDoc
 - Validation
 - Spring Security
-- Autenticação por JWT
+- JSON Web Token (JWT)
 - Railway
 - Junit
 - OpenAPI (Swagger)
