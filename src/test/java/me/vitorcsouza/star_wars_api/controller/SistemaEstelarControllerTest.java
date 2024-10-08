@@ -75,7 +75,6 @@ class SistemaEstelarControllerTest {
         dtoReq = new SistemaEstelarDtoReq(
                 "Sistema Estelar Coruscant",
                 "Centro político da galáxia e lar da cidade-planeta Coruscant, sede da República Galáctica."
-
         );
 
         SistemaEstelar sistemaEstelar1 = new SistemaEstelar(dtoReq);
