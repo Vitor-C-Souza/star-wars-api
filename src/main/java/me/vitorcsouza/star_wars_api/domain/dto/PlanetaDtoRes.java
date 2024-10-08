@@ -15,7 +15,7 @@ public record PlanetaDtoRes(
         SistemaEstelarDtoResPlaneta sistema,
         List<PersonagemDtoResPlaneta> personagens
 ) {
-    public PlanetaDtoRes(Planeta planeta, PersonagemRepository personagemRepository){
+    public PlanetaDtoRes(Planeta planeta, List<PersonagemDtoResPlaneta> personagens){
         this(
                 planeta.getId(),
                 planeta.getNome(),
@@ -23,7 +23,6 @@ public record PlanetaDtoRes(
                 planeta.getTerreno(),
                 planeta.getPopulacao(),
                 new SistemaEstelarDtoResPlaneta(planeta.getSistema()),
-                personagemRepository.findByPlaneta(planeta.getId()).stream().map(PersonagemDtoResPlaneta::new).collect(Collectors.toList())
-        );
+                personagens);
     }
 }

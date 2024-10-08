@@ -1,10 +1,14 @@
 package me.vitorcsouza.star_wars_api.controller;
 
 import me.vitorcsouza.star_wars_api.domain.dto.*;
-import me.vitorcsouza.star_wars_api.domain.model.*;
+import me.vitorcsouza.star_wars_api.domain.model.Personagem;
+import me.vitorcsouza.star_wars_api.domain.model.Planeta;
+import me.vitorcsouza.star_wars_api.domain.model.SistemaEstelar;
+import me.vitorcsouza.star_wars_api.domain.model.Usuario;
+import me.vitorcsouza.star_wars_api.domain.repository.PersonagemRepository;
 import me.vitorcsouza.star_wars_api.domain.repository.PlanetaRepository;
 import me.vitorcsouza.star_wars_api.domain.repository.SistemaEstelarRepository;
-import me.vitorcsouza.star_wars_api.domain.service.PersonagemService;
+import me.vitorcsouza.star_wars_api.domain.service.PlanetaService;
 import me.vitorcsouza.star_wars_api.infra.security.TokenService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,7 +24,6 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -30,29 +33,31 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 
 @SpringBootTest
 @AutoConfigureMockMvc
-class PersonagemControllerTest {
+class PlanetaControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
     @MockBean
-    private PlanetaRepository planetaRepository;
-    @MockBean
     private SistemaEstelarRepository sistemaEstelarRepository;
+    @MockBean
+    private PersonagemRepository personagemRepository;
+    @MockBean
+    private PlanetaRepository planetaRepository;
 
     @MockBean
-    private PersonagemService service;
+    private PlanetaService service;
     @MockBean
     private TokenService tokenService;
 
-    private PersonagemDtoRes dtoRes;
-    private PersonagemDtoReq dtoReq;
+    private PlanetaDtoReq dtoReq;
+    private PlanetaDtoRes dtoRes;
 
     private Long id;
     private String json;
     private String token;
 
     private PageRequest paginacao;
-    private Page<Personagem> personagemPage;
+    private Page<Planeta> planetaPage;
 
 
     @BeforeEach
@@ -66,17 +71,18 @@ class PersonagemControllerTest {
 
         json = """
                 {
-                    "nome": "Luke Skywalker",
-                    "raca": "Humano",
-                    "afiliacao": "ALIANCA_REBELDE",
-                    "planetaNatal_id": 1
+                  "nome": "D'rinba IV",
+                  "clima": "Frio",
+                  "terreno": "Montanhas e Desertos Gelados",
+                  "populacao": 75000,
+                  "sistema_id": 4
                 }
                 """;
-
-        dtoReq = new PersonagemDtoReq(
-                "Luke Skywalker",
-                "Humano",
-                "ALIANCA_REBELDE",
+        dtoReq = new PlanetaDtoReq(
+                "D'rinba IV",
+                "Frio",
+                "Montanhas e Desertos Gelados",
+                75000,
                 1L
         );
 
@@ -85,38 +91,44 @@ class PersonagemControllerTest {
                 "Centro político da galáxia e lar da cidade-planeta Coruscant, sede da República Galáctica."
         );
         SistemaEstelar sistemaEstelar = new SistemaEstelar(sistemaEstelarDtoReq);
-
-        PlanetaDtoReq planetaDtoReq = new PlanetaDtoReq(
-                "D'rinba IV",
-                "Frio",
-                "Montanhas e Desertos Gelados",
-                75000,
-                1L);
-
         when(sistemaEstelarRepository.findById(anyLong())).thenReturn(Optional.of(sistemaEstelar));
 
-        Planeta planeta = new Planeta(planetaDtoReq, sistemaEstelarRepository);
+        Planeta planeta1 = new Planeta(dtoReq, sistemaEstelarRepository);
+        Planeta planeta2 = new Planeta(dtoReq, sistemaEstelarRepository);
 
-        when(planetaRepository.findById(anyLong())).thenReturn(Optional.of(planeta));
+        when(planetaRepository.findById(anyLong())).thenReturn(Optional.of(planeta1));
 
-        Personagem personagem1 = new Personagem(dtoReq, planetaRepository);
-        Personagem personagem2 = new Personagem(dtoReq, planetaRepository);
-
-        dtoRes = new PersonagemDtoRes(personagem1);
+        PersonagemDtoReq personagemDtoReq = new PersonagemDtoReq(
+                "Luke Skywalker",
+                "Humano",
+                "ALIANCA_REBELDE",
+                1L
+        );
+        Personagem personagem1 = new Personagem(personagemDtoReq, planetaRepository);
+        Personagem personagem2 = new Personagem(personagemDtoReq, planetaRepository);
+        PersonagemDtoResPlaneta personagemDtoResPlaneta1 = new PersonagemDtoResPlaneta(personagem1);
+        PersonagemDtoResPlaneta personagemDtoResPlaneta2 = new PersonagemDtoResPlaneta(personagem1);
 
         List<Personagem> personagemList = Arrays.asList(personagem2, personagem1);
+
+        when(personagemRepository.findByPlaneta(anyLong())).thenReturn(personagemList);
+        List<PersonagemDtoResPlaneta> personagemDtoResPlanetaList = Arrays.asList(personagemDtoResPlaneta1, personagemDtoResPlaneta2);
+
+        dtoRes = new PlanetaDtoRes(planeta1, personagemDtoResPlanetaList);
+
+        List<Planeta> planetaList = Arrays.asList(planeta1, planeta2);
         paginacao = PageRequest.of(0, 15);
-        personagemPage = new PageImpl<>(personagemList, paginacao, personagemList.size());
+        planetaPage = new PageImpl<>(planetaList, paginacao, planetaList.size());
     }
 
     @Test
-    void deveRetornarCodigo201ParaSalvarUmPersonagem() throws Exception {
+    void deveRetornarCodigo201ParaSalvarUmPlaneta() throws Exception {
         //ARRANGE
-        when(service.create(any(PersonagemDtoReq.class))).thenReturn(dtoRes);
+        when(service.create(any(PlanetaDtoReq.class))).thenReturn(dtoRes);
 
 
         //ACT
-        var response = mockMvc.perform(post("/personagem")
+        var response = mockMvc.perform(post("/planeta")
                 .header("Authorization", "Bearer " + token)
                 .content(json)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -127,13 +139,13 @@ class PersonagemControllerTest {
     }
 
     @Test
-    void deveRetornarCodigo200ParaEcontrarUmPersonagem() throws Exception {
+    void deveRetornarCodigo200ParaEncontrarUmPlaneta() throws Exception {
         //ARRANGE
         when(service.findById(id)).thenReturn(dtoRes);
 
 
         //ACT
-        var response = mockMvc.perform(get("/personagem/" + id)
+        var response = mockMvc.perform(get("/planeta/" + id)
                 .header("Authorization", "Bearer " + token)
                 .contentType(MediaType.APPLICATION_JSON)
         ).andReturn().getResponse();
@@ -143,13 +155,20 @@ class PersonagemControllerTest {
     }
 
     @Test
-    void deveRetornarCodigo200ParaEcontrarUmaPageDePersonagem() throws Exception {
+    void deveRetornarCodigo200ParaEncontrarUmaPagePlaneta() throws Exception {
         //ARRANGE
-        when(service.findAll(paginacao)).thenReturn(personagemPage.map(PersonagemDtoRes::new));
+        when(planetaRepository.findAll(any(PageRequest.class))).thenReturn(planetaPage);
 
+        Page<PlanetaDtoRes> planetaDtoResPage = planetaPage.map(planeta -> {
+            List<PersonagemDtoResPlaneta> personagemDtoResPlanetas = personagemRepository.findByPlaneta(planeta.getId())
+                    .stream().map(PersonagemDtoResPlaneta::new).toList();
+            return new PlanetaDtoRes(planeta, personagemDtoResPlanetas);
+        });
+
+        when(service.findAll(paginacao)).thenReturn(planetaDtoResPage);
 
         //ACT
-        var response = mockMvc.perform(get("/personagem")
+        var response = mockMvc.perform(get("/planeta")
                 .header("Authorization", "Bearer " + token)
                 .param("page", "0")
                 .param("size", "15")
@@ -161,13 +180,13 @@ class PersonagemControllerTest {
     }
 
     @Test
-    void deveRetornarCodigo200ParaAtualizarUmPersonagem() throws Exception {
+    void deveRetornarCodigo200ParaAtualizarUmPlaneta() throws Exception {
         //ARRANGE
         when(service.update(dtoReq, id)).thenReturn(dtoRes);
 
 
         //ACT
-        var response = mockMvc.perform(put("/personagem/" + id)
+        var response = mockMvc.perform(put("/planeta/" + id)
                 .header("Authorization", "Bearer " + token)
                 .content(json)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -177,12 +196,13 @@ class PersonagemControllerTest {
         assertEquals(200, response.getStatus());
     }
 
+
     @Test
     void deveRetornarCodigo204ParaDeletarUmPersonagem() throws Exception {
         //ARRANGE
 
         //ACT
-        var response = mockMvc.perform(delete("/personagem/" + id)
+        var response = mockMvc.perform(delete("/planeta/" + id)
                 .header("Authorization", "Bearer " + token)
                 .contentType(MediaType.APPLICATION_JSON)
         ).andReturn().getResponse();

@@ -1,6 +1,8 @@
 package me.vitorcsouza.star_wars_api.domain.service.impl;
 
 
+import jakarta.validation.Valid;
+import me.vitorcsouza.star_wars_api.domain.dto.PersonagemDtoResPlaneta;
 import me.vitorcsouza.star_wars_api.domain.dto.PlanetaDtoReq;
 import me.vitorcsouza.star_wars_api.domain.dto.PlanetaDtoRes;
 import me.vitorcsouza.star_wars_api.domain.model.Planeta;
@@ -15,7 +17,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 @Service
 public class PlanetaServiceImpl implements PlanetaService {
@@ -27,6 +31,8 @@ public class PlanetaServiceImpl implements PlanetaService {
     private PersonagemRepository personagemRepository;
     @Autowired
     private PlanetaConvert convert;
+
+    private List<PersonagemDtoResPlaneta> dtoResPlanetas;
 
     @Transactional
     @Override
@@ -47,7 +53,7 @@ public class PlanetaServiceImpl implements PlanetaService {
     @Override
     public Page<PlanetaDtoRes> findAll(Pageable pageable) {
         Page<Planeta> planetaPage = repository.findAll(pageable);
-        return planetaPage.map(planeta -> new PlanetaDtoRes(planeta, personagemRepository));
+        return planetaPage.map(planeta -> new PlanetaDtoRes(planeta, personagemRepository.findByPlaneta(planeta.getId()).stream().map(PersonagemDtoResPlaneta::new).collect(Collectors.toList())));
     }
 
     @Transactional
