@@ -14,7 +14,9 @@ Criação, gerenciamento e visualização de uma galáxia inspirada em Star Wars
 - SpringDoc
 - Validation
 - Spring Security
+- Autenticação por JWT
 - Railway
+- Junit
 - OpenAPI (Swagger)
 
 ## Diagrama de Classes (Domínio da API)
